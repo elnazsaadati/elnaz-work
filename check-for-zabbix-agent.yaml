@@ -1,0 +1,31 @@
+---
+- hosts: all
+  tasks:
+    - name: check for zabbix-agent is installed on ubuntu servers
+      shell: apt list --installed | grep zabbix
+      when: ansible_distribution=="Ubuntu" 
+      register: check
+      ignore_errors: yes
+    - name: check for zabbix-agent is installed on centos servers
+      shell: rpm -qa | grep zabbix
+      when: ansible_distribution=="CentOS"
+      register: check2
+      ignore_errors: yes
+
+
+    - name: show hosts that doesnot zabbix installed on them
+      debug:
+        #   msg: "{{check.stdout}}"
+                msg: zabbix-agent is not installed
+      ignore_errors: yes
+      when:  
+        - "'zabbix-agent' not in check.stdout"
+        - ansible_distribution == "Ubuntu"
+
+    - name: show hosts that doesnot zabbix installed on centos
+      debug:
+        #   msg: "{{check.stdout}}"
+                msg: zabbix-agent is not installed
+      when:  
+        - "'zabbix-agent' not in check2.stdout"  
+        -  ansible_distribution == "CentOS" 

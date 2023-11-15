@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - name: copy
+      template:
+        src: my2.j2
+        dest: /tmp/myconf3
+        remote_src: no
+      delegate_to: localhost
